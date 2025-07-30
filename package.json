@@ -2,14 +2,26 @@
   "name": "backendotp",
   "version": "1.0.0",
   "main": "server.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
   },
-  "keywords": [],
-  "author": "",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "build": "echo 'No build step required'",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "otp",
+    "backend",
+    "api",
+    "email",
+    "verification"
+  ],
+  "author": "VuthChanChesda",
   "license": "ISC",
-  "description": "",
+  "description": "OTP Backend API for email verification",
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^17.0.0",

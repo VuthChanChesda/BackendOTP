@@ -3,6 +3,8 @@ node_modules/
 
 # Environment variables file
 .env
+.env.local
+.env.production
 
 # Logs
 logs
@@ -13,9 +15,27 @@ yarn-error.log*
 
 # OS files
 .DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
 
 # Optional npm cache folder
 .npm
+
+# Railway local files
+.railway/
+
+# Build artifacts
+dist/
+build/
+
+# Temporary files
+tmp/
+temp/
 
 
 

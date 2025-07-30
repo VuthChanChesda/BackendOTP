@@ -1,6 +1,6 @@
-const transporter = require('../config/mailer');
+const transporter = require("../config/mailer");
 
-const generateOtpTemplate = (otp, userEmail = '', expiryMinutes = 5) => {
+const generateOtpTemplate = (otp, userEmail = "", expiryMinutes = 5) => {
   return `
     <!DOCTYPE html>
     <html lang="en">
@@ -95,7 +95,9 @@ const generateOtpTemplate = (otp, userEmail = '', expiryMinutes = 5) => {
                   <hr style="border: none; border-top: 1px solid #e1e8ed; margin: 24px 0;">
                   
                   <p style="margin: 0; color: #a0aec0; font-size: 12px; text-align: center; line-height: 1.4;">
-                    This email was sent to ${userEmail ? userEmail : 'your registered email address'}. 
+                    This email was sent to ${
+                      userEmail ? userEmail : "your registered email address"
+                    }. 
                     This is an automated message, please do not reply to this email.
                   </p>
                   
@@ -115,15 +117,42 @@ const generateOtpTemplate = (otp, userEmail = '', expiryMinutes = 5) => {
 };
 
 const sendOtpEmail = async (toEmail, otp) => {
-  const mailOptions = {
-    from: `"Your App" <${process.env.EMAIL_USER}>`,
-    to: toEmail,
-    subject: 'Your OTP Code',
-    text: `Your OTP code is: ${otp}`, // Fallback for non-HTML clients
-    html: generateOtpTemplate(otp),
-  };
+  try {
+    const mailOptions = {
+      from: `"ELTS App" <${process.env.EMAIL_USER}>`,
+      to: toEmail,
+      subject: "Your OTP Code - ELTS App",
+      text: `Your OTP code is: ${otp}. This code will expire in 5 minutes.`,
+      html: generateOtpTemplate(otp),
+      priority: "high",
+    };
 
-  return transporter.sendMail(mailOptions);
+    const info = await transporter.sendMail(mailOptions);
+
+    console.log(`✅ OTP email sent successfully to ${toEmail}`);
+    console.log(`Message ID: ${info.messageId}`);
+
+    return {
+      success: true,
+      messageId: info.messageId,
+      response: info.response,
+    };
+  } catch (error) {
+    console.error("❌ Email sending failed:", error);
+
+    // Provide more specific error information
+    if (error.code === "EAUTH") {
+      throw new Error(
+        "Email authentication failed. Please check EMAIL_USER and EMAIL_PASS."
+      );
+    } else if (error.code === "ENOTFOUND") {
+      throw new Error("Network error. Please check your internet connection.");
+    } else if (error.responseCode === 550) {
+      throw new Error("Invalid recipient email address.");
+    } else {
+      throw new Error(`Email service error: ${error.message}`);
+    }
+  }
 };
 
 module.exports = { sendOtpEmail };
